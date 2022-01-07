@@ -1,12 +1,11 @@
 export interface CurrencyRate {
-    [CurrencyPair:string]: number
+  [CurrencyPair: string]: number;
 }
 
-export enum CurrencyPairs {
-    USD_RUB = 'USD_RUB',
-    RUB_USD = 'RUB_USD',
-    USD_BYN = 'USD_BYN',
-    BYN_USD = 'BYN_USD',
-    RUB_BYN = 'RUB_BYN',
-    BYN_RUB = 'BYN_RUB'
-} 
+export enum Currencies {
+  USD = "USD",
+  RUB = "RUB",
+  BYN = "BYN",
+}
+
+export type Currency = keyof typeof Currencies;
