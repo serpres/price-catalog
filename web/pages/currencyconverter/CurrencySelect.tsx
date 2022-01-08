@@ -23,7 +23,9 @@ const CurrencySelect = ({ value, selectIndex, handleChangeSelect }: Props) => {
         onChange={(event) => handleChangeSelect(event, selectIndex)}
       >
         {Object.values(Currencies).map((currency) => (
-          <MenuItem value={currency}>{currency}</MenuItem>
+          <MenuItem key={currency} value={currency}>
+            {currency}
+          </MenuItem>
         ))}
       </Select>
     </FormControl>

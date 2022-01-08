@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 
 import { Container, Grid } from "@mui/material";
 
-import Header from "../components/header";
+import Header from "../components/Header";
 
 const MainLayout: NextPage = ({ children }) => {
   const drawerWidth = 240;

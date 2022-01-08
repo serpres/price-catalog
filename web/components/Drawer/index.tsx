@@ -39,7 +39,7 @@ export default function AppDrawer({
       <Divider />
       <List>
         {menuItems.map((item) => (
-          <Link href={item.path}>
+          <Link key={item.path} href={item.path}>
             <ListItem button key={item.title}>
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.title} />

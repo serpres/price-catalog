@@ -1,39 +1,85 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useReducer } from "react";
 import type { NextPage } from "next";
 
 import { Button, Grid, SelectChangeEvent, TextField } from "@mui/material";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 
+import PopupNotification from "../../components/PopupNotification";
 import CurrencySelect from "./CurrencySelect";
 
-import { CurrncyService } from "../../services/CurrencyService";
+import { CurrencyService } from "../../services/CurrencyService";
 
 import { Currency } from "../../types/currency";
 
+const initialState = {
+  firstInput: 0,
+  secondInput: 0,
+  currencyRate: 75,
+};
+
 const CurrencyConverter: NextPage = () => {
-  const [currencyRate, setCurrencyRate] = useState<number>(1);
+  const [error, setError] = useState(false);
+
   const [currencyPair, setCurrencyPair] = useState<[Currency, Currency]>([
     "USD",
     "RUB",
   ]);
-  const [firstInputValue, setFirstInputValue] = useState(0);
-  const [secondInputValue, setSecondInputValue] = useState(
-    firstInputValue * currencyRate
-  );
+
+  function currencyReducer(
+    state: typeof initialState,
+    action: { type: string; payload?: any }
+  ) {
+    switch (action.type) {
+      case "setCurrencyRate":
+        return {
+          ...state,
+          currencyRate: action.payload.value,
+        };
+
+      case "firstInputChanged":
+        return {
+          ...state,
+          firstInput: action.payload.value,
+          secondInput: Number(
+            (action.payload.value * state.currencyRate).toFixed(2)
+          ),
+        };
+
+      case "secondInputChanged":
+        return {
+          ...state,
+          secondInput: action.payload.value,
+          firstInput: Number(
+            (action.payload.value / state.currencyRate).toFixed(2)
+          ),
+        };
+      case "spawCurrencyPair":
+        const swapRate = 1 / state.currencyRate;
+        return {
+          ...state,
+          currencyRate: swapRate,
+          secondInput: Number((state.firstInput * swapRate).toFixed(2)),
+        };
+
+      default:
+        throw new Error();
+    }
+  }
+  const [state, dispatch] = useReducer(currencyReducer, initialState);
 
   useEffect(() => {
     if (currencyPair) {
       const currencyPairString = `${currencyPair[0]}_${currencyPair[1]}`;
-      CurrncyService.getCurrencyRate(currencyPairString).then(({ data }) =>
-        setCurrencyRate(data[currencyPairString])
-      );
+      CurrencyService.getCurrencyRate(currencyPairString)
+        .then(({ data }) =>
+          dispatch({
+            type: "setCurrencyRate",
+            payload: { value: data[currencyPairString] },
+          })
+        )
+        .catch((error) => setError(true));
     }
   }, [currencyPair]);
-
-  useEffect(() => {
-    // TODO: Add ability to change the second input
-    setSecondInputValue(Number((firstInputValue * currencyRate).toFixed(2)));
-  }, [firstInputValue]);
 
   const handleChangeSelect = (event: SelectChangeEvent, selectIndex: 0 | 1) => {
     const newCurrency = event.target.value as Currency;
@@ -45,27 +91,33 @@ const CurrencyConverter: NextPage = () => {
         break;
       case 1:
         if (currencyPair[0] === newCurrency) swapCurrencyPair();
-        else setCurrencyPair((prev) => [newCurrency, prev[1]]);
-        setCurrencyPair((prev) => [prev[0], newCurrency]);
+        else setCurrencyPair((prev) => [prev[0], newCurrency]);
         break;
     }
   };
 
   const handleInputChange = (event: any, inputIndex: 0 | 1) => {
+    const payload = { value: event.target.value };
+
     switch (inputIndex) {
       case 0:
-        setFirstInputValue(event.target.value);
+        dispatch({
+          type: "firstInputChanged",
+          payload,
+        });
         break;
       case 1:
-        setSecondInputValue(event.target.value);
+        dispatch({
+          type: "secondInputChanged",
+          payload,
+        });
         break;
     }
   };
 
   const swapCurrencyPair = () => {
     setCurrencyPair((prev) => [prev[1], prev[0]]);
-    setFirstInputValue(secondInputValue);
-    setSecondInputValue(firstInputValue * currencyRate);
+    dispatch({ type: "spawCurrencyPair" });
   };
 
   return (
@@ -81,7 +133,7 @@ const CurrencyConverter: NextPage = () => {
         <Grid item>
           <TextField
             id="first-currency"
-            value={firstInputValue}
+            value={state.firstInput}
             onChange={(e) => {
               handleInputChange(e, 0);
             }}
@@ -101,7 +153,7 @@ const CurrencyConverter: NextPage = () => {
           <TextField
             color="secondary"
             id="second-currency"
-            value={secondInputValue}
+            value={state.secondInput}
             onChange={(e) => {
               handleInputChange(e, 1);
             }}
@@ -113,6 +165,15 @@ const CurrencyConverter: NextPage = () => {
           />
         </Grid>
       </Grid>
+      {error && (
+        <PopupNotification
+          onPopupClose={setError}
+          type="error"
+          isOpen={error}
+          // TODO: Add i18
+          message={"For some reason, currency server is unavailable."}
+        />
+      )}
     </div>
   );
 };
