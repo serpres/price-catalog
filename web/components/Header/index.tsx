@@ -5,7 +5,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 
 import useToggle from "../../hooks/useToggle";
 
-import AppDrawer from "../drawer";
+import AppDrawer from "../Drawer";
 
 interface Props {
   drawerWidth: number;

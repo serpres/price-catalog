@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 
 import { Container, Grid } from "@mui/material";
 
-import Header from "../components/header";
+import Header from "../components/Header";
 
 const MainLayout: NextPage = ({ children }) => {
   const drawerWidth = 240;
@@ -15,9 +15,7 @@ const MainLayout: NextPage = ({ children }) => {
         justifyContent="center"
         sx={{ pl: { sm: `${drawerWidth}px` } }}
       >
-        <Container sx={{ mt: "80px", width: `calc(100% - ${drawerWidth}px)` }}>
-          {children}
-        </Container>
+        <Container sx={{ mt: "80px" }}>{children}</Container>
       </Grid>
     </>
   );

@@ -1,23 +1,124 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useReducer } from "react";
 import type { NextPage } from "next";
 
-import { Button, Grid, TextField } from "@mui/material";
-
+import { Button, Grid, SelectChangeEvent, TextField } from "@mui/material";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 
-import { CurrncyService } from "../../services/CurrencyService";
+import PopupNotification from "../../components/PopupNotification";
+import CurrencySelect from "./CurrencySelect";
 
-import { CurrencyPairs } from "../../types/currency";
+import { CurrencyService } from "../../services/CurrencyService";
+
+import { Currency } from "../../types/currency";
+
+const initialState = {
+  firstInput: 0,
+  secondInput: 0,
+  currencyRate: 75,
+};
 
 const CurrencyConverter: NextPage = () => {
-  const [currency, setCurrency] = useState<any>();
-  // TODO: Make a currency selection menu, implement the request according to selected currency
+  const [error, setError] = useState(false);
+
+  const [currencyPair, setCurrencyPair] = useState<[Currency, Currency]>([
+    "USD",
+    "RUB",
+  ]);
+
+  function currencyReducer(
+    state: typeof initialState,
+    action: { type: string; payload?: any }
+  ) {
+    switch (action.type) {
+      case "setCurrencyRate":
+        return {
+          ...state,
+          currencyRate: action.payload.value,
+        };
+
+      case "firstInputChanged":
+        return {
+          ...state,
+          firstInput: action.payload.value,
+          secondInput: Number(
+            (action.payload.value * state.currencyRate).toFixed(2)
+          ),
+        };
+
+      case "secondInputChanged":
+        return {
+          ...state,
+          secondInput: action.payload.value,
+          firstInput: Number(
+            (action.payload.value / state.currencyRate).toFixed(2)
+          ),
+        };
+      case "spawCurrencyPair":
+        const swapRate = 1 / state.currencyRate;
+        return {
+          ...state,
+          currencyRate: swapRate,
+          secondInput: Number((state.firstInput * swapRate).toFixed(2)),
+        };
+
+      default:
+        throw new Error();
+    }
+  }
+  const [state, dispatch] = useReducer(currencyReducer, initialState);
 
   useEffect(() => {
-    CurrncyService.getCurrencyRate(CurrencyPairs.USD_RUB).then(({ data }) =>
-      setCurrency(data[CurrencyPairs.USD_RUB])
-    );
-  }, []);
+    if (currencyPair) {
+      const currencyPairString = `${currencyPair[0]}_${currencyPair[1]}`;
+      CurrencyService.getCurrencyRate(currencyPairString)
+        .then(({ data }) =>
+          dispatch({
+            type: "setCurrencyRate",
+            payload: { value: data[currencyPairString] },
+          })
+        )
+        .catch((error) => setError(true));
+    }
+  }, [currencyPair]);
+
+  const handleChangeSelect = (event: SelectChangeEvent, selectIndex: 0 | 1) => {
+    const newCurrency = event.target.value as Currency;
+
+    switch (selectIndex) {
+      case 0:
+        if (currencyPair[1] === newCurrency) swapCurrencyPair();
+        else setCurrencyPair((prev) => [newCurrency, prev[1]]);
+        break;
+      case 1:
+        if (currencyPair[0] === newCurrency) swapCurrencyPair();
+        else setCurrencyPair((prev) => [prev[0], newCurrency]);
+        break;
+    }
+  };
+
+  const handleInputChange = (event: any, inputIndex: 0 | 1) => {
+    const payload = { value: event.target.value };
+
+    switch (inputIndex) {
+      case 0:
+        dispatch({
+          type: "firstInputChanged",
+          payload,
+        });
+        break;
+      case 1:
+        dispatch({
+          type: "secondInputChanged",
+          payload,
+        });
+        break;
+    }
+  };
+
+  const swapCurrencyPair = () => {
+    setCurrencyPair((prev) => [prev[1], prev[0]]);
+    dispatch({ type: "spawCurrencyPair" });
+  };
 
   return (
     <div>
@@ -27,27 +128,52 @@ const CurrencyConverter: NextPage = () => {
         gap={1}
         alignItems="center"
         justifyContent="center"
-        width="100%"
         flexDirection={{ xs: "column", lg: "row" }}
       >
         <Grid item>
-          <TextField id="first-currency" label="USD" />
+          <TextField
+            id="first-currency"
+            value={state.firstInput}
+            onChange={(e) => {
+              handleInputChange(e, 0);
+            }}
+          />
+          <CurrencySelect
+            value={currencyPair[0]}
+            selectIndex={0}
+            handleChangeSelect={handleChangeSelect}
+          />
         </Grid>
         <Grid item>
-          {/* TODO: Make a currency swap on button click */}
-          <Button>
+          <Button onClick={swapCurrencyPair}>
             <CompareArrowsIcon fontSize="large" />
           </Button>
         </Grid>
         <Grid item>
           <TextField
+            color="secondary"
             id="second-currency"
-            label="RUB"
-            variant="filled"
-            value={currency}
+            value={state.secondInput}
+            onChange={(e) => {
+              handleInputChange(e, 1);
+            }}
+          />
+          <CurrencySelect
+            value={currencyPair[1]}
+            selectIndex={1}
+            handleChangeSelect={handleChangeSelect}
           />
         </Grid>
       </Grid>
+      {error && (
+        <PopupNotification
+          onPopupClose={setError}
+          type="error"
+          isOpen={error}
+          // TODO: Add i18
+          message={"For some reason, currency server is unavailable."}
+        />
+      )}
     </div>
   );
 };
