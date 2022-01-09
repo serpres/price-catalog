@@ -9,6 +9,7 @@ import useToggle from "../../hooks/useToggle";
 
 import AppDrawer from "../Drawer";
 import LanguageMenu from "../LanguageMenu";
+import SearchInput from "../Search";
 
 interface Props {
   drawerWidth: number;
@@ -36,6 +37,14 @@ const Header = ({ drawerWidth }: Props) => {
             {t(`products_catalog`)}
           </Typography>
           <LanguageMenu />
+          <Typography variant="h6" component="div" sx={{ flexGrow: 12 }}>
+            Products catalog
+          </Typography>
+
+          <Box flexGrow={2}>
+            {/* TODO: Add the ability to search  products */}
+            <SearchInput />
+          </Box>
         </Toolbar>
       </AppBar>
       <AppDrawer
