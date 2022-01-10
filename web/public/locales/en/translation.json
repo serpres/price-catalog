@@ -1,0 +1,12 @@
+{
+    "products_catalog": "Products catalog",
+    "main_page": "Main page",
+    "currency_convertor": "Currency convertor",
+    "languages": {
+        "english": "English",
+        "russian": "Русский"
+    },
+    "currency": {
+        "server_unavailable": "At the moment, it's not possible to get the exchange rate."
+    }
+}

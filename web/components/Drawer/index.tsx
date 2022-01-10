@@ -1,5 +1,6 @@
 import * as React from "react";
 
+import Link from "next/link";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
@@ -11,7 +12,8 @@ import Toolbar from "@mui/material/Toolbar";
 
 import ListItemIcon from "@mui/material/ListItemIcon";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
-import Link from "next/link";
+
+import { useTranslation } from "react-i18next";
 
 interface Props {
   drawerWidth: number;
@@ -24,11 +26,13 @@ export default function AppDrawer({
   drawerMobileOpen,
   handleDrawerMobileToggle,
 }: Props) {
+  const { t } = useTranslation();
+
   const menuItems = [
-    { path: "/", title: "Главная", icon: <HomeIcon /> },
+    { path: "/", title: t(`main_page`), icon: <HomeIcon /> },
     {
       path: "/currencyconverter",
-      title: "Конвертор валют",
+      title: t(`currency_convertor`),
       icon: <CompareArrowsIcon />,
     },
   ];
@@ -42,7 +46,9 @@ export default function AppDrawer({
           <Link key={item.path} href={item.path}>
             <ListItem button key={item.title}>
               <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.title} />
+              <a>
+                <ListItemText primary={item.title} />
+              </a>
             </ListItem>
           </Link>
         ))}

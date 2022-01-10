@@ -6,6 +6,7 @@ import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 
 import PopupNotification from "../../components/PopupNotification";
 import CurrencySelect from "./CurrencySelect";
+import { useTranslation } from "react-i18next";
 
 import { CurrencyService } from "../../services/CurrencyService";
 
@@ -19,6 +20,7 @@ const initialState = {
 
 const CurrencyConverter: NextPage = () => {
   const [error, setError] = useState(false);
+  const { t } = useTranslation();
 
   const [currencyPair, setCurrencyPair] = useState<[Currency, Currency]>([
     "USD",
@@ -170,8 +172,7 @@ const CurrencyConverter: NextPage = () => {
           onPopupClose={setError}
           type="error"
           isOpen={error}
-          // TODO: Add i18
-          message={"For some reason, currency server is unavailable."}
+          message={t(`currency.server_unavailable`)}
         />
       )}
     </div>
