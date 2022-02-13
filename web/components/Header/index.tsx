@@ -1,6 +1,13 @@
 import React from "react";
 
-import { AppBar, Box, IconButton, Toolbar, Typography } from "@mui/material";
+import {
+  AppBar,
+  Box,
+  IconButton,
+  Toolbar,
+  Typography,
+  Grid,
+} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 
 import { useTranslation } from "react-i18next";
@@ -21,7 +28,11 @@ const Header = ({ drawerWidth }: Props) => {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+      <AppBar
+        sx={{
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+        }}
+      >
         <Toolbar>
           <IconButton
             size="large"
@@ -33,18 +44,27 @@ const Header = ({ drawerWidth }: Props) => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            {t(`products_catalog`)}
-          </Typography>
-          <LanguageMenu />
-          <Typography variant="h6" component="div" sx={{ flexGrow: 12 }}>
-            Products catalog
-          </Typography>
 
-          <Box flexGrow={2}>
+          <Grid
+            container
+            justifyContent="space-between"
+            alignItems="center"
+            flexWrap="nowrap"
+          >
+            <Grid item>
+              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                {t(`products_catalog`)}
+              </Typography>
+            </Grid>
+
             {/* TODO: Add the ability to search  products */}
-            <SearchInput />
-          </Box>
+            <Grid item xs={4}>
+              <SearchInput />
+            </Grid>
+            <Grid item>
+              <LanguageMenu />
+            </Grid>
+          </Grid>
         </Toolbar>
       </AppBar>
       <AppDrawer

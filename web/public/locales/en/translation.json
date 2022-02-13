@@ -8,5 +8,9 @@
     },
     "currency": {
         "server_unavailable": "At the moment, it's not possible to get the exchange rate."
+    },
+    "search": "Search",
+    "products": {
+        "add_product": "Add product"
     }
 }

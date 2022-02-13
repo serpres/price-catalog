@@ -1,12 +1,16 @@
 {
-    "products_catalog": "Каталог продуктов",
-    "main_page": "Главная",
+    "products_catalog": "Каталог товаров",
+    "main_page": "Главная страница",
     "currency_convertor": "Конвертор валют",
     "languages": {
         "english": "English",
         "russian": "Русский"
     },
     "currency": {
-        "server_unavailable": "В данный момент не удаётся получить курс валют."
+        "server_unavailable": "В данный момент не удаётся получить курс валют."    
+    },
+    "search": "Поиск",
+    "products": {
+        "add_product": "Добавить товар"
     }
 }

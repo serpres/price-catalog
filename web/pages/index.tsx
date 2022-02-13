@@ -1,6 +1,7 @@
 import { Grid } from "@mui/material";
 import type { NextPage } from "next";
 import ProductCard from "../components/ProductCard";
+import AddProduct from "../components/AddProductSpeedDial";
 
 // TODO: Replace with data from server when there is an endpoint
 const MOCK_DATA = [
@@ -58,6 +59,7 @@ const Home: NextPage = () => {
           />
         ))}
       </Grid>
+      <AddProduct />
     </>
   );
 };
