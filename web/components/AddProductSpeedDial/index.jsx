@@ -8,10 +8,20 @@ import AddIcon from "@mui/icons-material/Add";
 
 import { useTranslation } from "react-i18next";
 
+import useToggle from "../../hooks/useToggle";
+import AddProductDialog from "../AddProductDialog";
+
 export default function AddProductSpeedDial() {
   const { t } = useTranslation();
+  const [isDialogOpen, toggleDialogOpen] = useToggle(false);
 
-  const actions = [{ icon: <AddIcon />, name: t(`products.add_product`) }];
+  const actions = [
+    {
+      icon: <AddIcon />,
+      name: t(`products.add_product`),
+      action: () => toggleDialogOpen(),
+    },
+  ];
 
   return (
     <Box
@@ -35,9 +45,11 @@ export default function AddProductSpeedDial() {
             icon={action.icon}
             tooltipTitle={action.name}
             tooltipOpen
+            onClick={action.action}
           />
         ))}
       </SpeedDial>
+      <AddProductDialog isOpen={isDialogOpen} onClose={toggleDialogOpen} />
     </Box>
   );
 }

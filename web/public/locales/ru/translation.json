@@ -1,6 +1,10 @@
 {
-    "products_catalog": "Каталог товаров",
     "main_page": "Главная страница",
+    "search": "Поиск",
+    "price": "Цена",
+    "store": "Магазин",
+    "add": "Добавить",
+    "cancel": "Отмена",
     "currency_convertor": "Конвертор валют",
     "languages": {
         "english": "English",
@@ -9,8 +13,10 @@
     "currency": {
         "server_unavailable": "В данный момент не удаётся получить курс валют."    
     },
-    "search": "Поиск",
     "products": {
-        "add_product": "Добавить товар"
-    }
+        "add_product": "Добавить товар",
+        "products_catalog": "Каталог товаров",
+        "product_name": "Название продукта"
+    },
+    "complete_all": "Пожалуйста, заполните все поля ниже."
 }

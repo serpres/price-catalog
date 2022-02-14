@@ -1,6 +1,10 @@
 {
-    "products_catalog": "Products catalog",
     "main_page": "Main page",
+    "search": "Search",
+    "price": "Price",
+    "store": "Store",
+    "add": "Add",
+    "cancel": "Cancel",
     "currency_convertor": "Currency convertor",
     "languages": {
         "english": "English",
@@ -9,8 +13,10 @@
     "currency": {
         "server_unavailable": "At the moment, it's not possible to get the exchange rate."
     },
-    "search": "Search",
     "products": {
-        "add_product": "Add product"
-    }
+        "add_product": "Add product",
+        "products_catalog": "Products catalog",
+        "product_name": "Product name"
+    },
+    "complete_all": "Please complete all fields below."
 }

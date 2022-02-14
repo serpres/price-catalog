@@ -53,7 +53,7 @@ const Header = ({ drawerWidth }: Props) => {
           >
             <Grid item>
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                {t(`products_catalog`)}
+                {t(`products.products_catalog`)}
               </Typography>
             </Grid>
 
